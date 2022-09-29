@@ -1,0 +1,14 @@
+{
+  "1": {
+    "TokenFarm": ["0xb9ede7E388FE8966a85f4DD3b55831c1A738B6a2"],
+    "DappToken": ["0x498CAFeBD76c382548ef4E3d768b6F012F78a59a"]
+  },
+  "5": {
+    "TokenFarm": ["0xb9ede7E388FE8966a85f4DD3b55831c1A738B6a2"],
+    "DappToken": ["0x498CAFeBD76c382548ef4E3d768b6F012F78a59a"]
+  },
+  "31337": {
+    "TokenFarm": ["0xDc64a140Aa3E981100a9becA4E685f962f0cF6C9"],
+    "DappToken": ["0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9"]
+  }
+}

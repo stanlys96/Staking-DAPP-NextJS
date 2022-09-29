@@ -26,6 +26,7 @@
     "web3uikit": "^1.0.4"
   },
   "devDependencies": {
+    "@ethersproject/contracts": "^5.7.0",
     "@iconify/react": "^4.0.0",
     "dotenv": "^16.0.2",
     "eslint": "8.24.0",

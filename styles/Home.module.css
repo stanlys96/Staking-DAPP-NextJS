@@ -4,6 +4,12 @@
   /* position: relative; */
 }
 
+.chainErrorLoading {
+  display: block;
+  margin: 0 auto;
+  text-align: center;
+}
+
 .container p {
   padding: 0;
   margin: 0;
@@ -68,6 +74,7 @@
   align-items: center;
   font-size: 20px;
   border-radius: 5px;
+  cursor: pointer;
 }
 
 .accountContainer {
@@ -171,7 +178,8 @@
 }
 
 .stakeBtn,
-.withdrawBtn {
+.withdrawBtn,
+.selectWalletBtn {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -182,9 +190,17 @@
   transition: 0.5s all;
 }
 
-.withdrawBtn:hover {
+.withdrawBtn:hover,
+.selectWalletBtn:hover {
   background-color: #0e1f8c;
   border: 2px solid #0e1f8c;
+}
+
+.selectWalletBtn {
+  background-color: #5868ce;
+  color: #cad9ff;
+  border: 2px solid #5868ce;
+  padding: 5px 15px;
 }
 
 .withdrawBtn {

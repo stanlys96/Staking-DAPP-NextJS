@@ -16,6 +16,25 @@ import networkMapping from '../networkMapping.json';
 import { constants, utils } from 'ethers';
 import { useStakeTokens, useStakedBalance, useUnstakeTokens } from '../hooks';
 import { ClipLoader, BeatLoader } from 'react-spinners';
+import Swal from 'sweetalert2';
+
+const Toast = Swal.mixin({
+  toast: true,
+  position: 'center',
+  showConfirmButton: false,
+  timer: 3000,
+  timerProgressBar: true,
+  didOpen: (toast) => {
+    toast.addEventListener('mouseenter', Swal.stopTimer);
+    toast.addEventListener('mouseleave', Swal.resumeTimer);
+  },
+});
+
+// const override = {
+//   display: 'block',
+//   margin: '0 auto',
+//   borderColor: '#ffffff',
+// };
 
 export default function StakingCard({
   imgUrl,
@@ -27,6 +46,8 @@ export default function StakingCard({
   const { notifications } = useNotifications();
   const [amount, setAmount] = useState(0);
   const [stakedValue, setStakedValue] = useState(0);
+  const [isStaking, setIsStaking] = useState(false);
+  const [isUnstaking, setIsUnstaking] = useState(false);
   const tokenBalance = useTokenBalance(
     tokenAddress,
     account ? account : constants.AddressZero,
@@ -35,12 +56,15 @@ export default function StakingCard({
   const formattedTokenBalance = tokenBalance
     ? parseFloat(formatUnits(tokenBalance, 18))
     : 0;
-  const { approveAndStake, state: approveAndStakeErc20State } =
-    useStakeTokens(tokenAddress);
+  const { approveAndStake, state: approveAndStakeErc20State } = useStakeTokens(
+    tokenAddress,
+    setIsStaking
+  );
 
   const { unstakeTokens, unstakeState } = useUnstakeTokens(tokenAddress);
 
   const isMining = approveAndStakeErc20State.status === 'Mining';
+  const isUnstakeMining = unstakeState.status === 'Mining';
 
   const handleInputChange = (event) => {
     const newAmount =
@@ -48,13 +72,17 @@ export default function StakingCard({
     setAmount(newAmount);
   };
 
-  const handleStakeSubmit = () => {
+  const handleStakeSubmit = async () => {
+    setIsStaking(true);
     const amountAsWei = utils.parseEther('1');
-    return approveAndStake(amountAsWei.toString());
+    await approveAndStake(amountAsWei.toString());
+    setIsStaking(false);
   };
 
-  const handleUnstakeSubmit = () => {
-    return unstakeTokens();
+  const handleUnstakeSubmit = async () => {
+    setIsUnstaking(true);
+    await unstakeTokens();
+    setIsUnstaking(false);
   };
 
   const [showErc20ApprovalSuccess, setShowErc20ApprovalSuccess] =
@@ -85,6 +113,10 @@ export default function StakingCard({
           notification.transactionName === 'Approve ERC20 transfer'
       ).length > 0
     ) {
+      Toast.fire({
+        icon: 'success',
+        title: 'Approved successfully! Now on to the 2nd tx!',
+      });
       setShowErc20ApprovalSuccess(true);
       setShowStakeTokenSuccess(false);
     }
@@ -96,6 +128,10 @@ export default function StakingCard({
           notification.transactionName === 'Stake Tokens'
       ).length > 0
     ) {
+      Toast.fire({
+        icon: 'success',
+        title: 'Tokens staked successfully!',
+      });
       setShowErc20ApprovalSuccess(false);
       setShowStakeTokenSuccess(true);
     }
@@ -121,29 +157,83 @@ export default function StakingCard({
             <p className={styles.stakeValue}>
               {formattedTokenBalance} {token}
             </p>
-            <p className={styles.stakeValue}>$2500 US</p>
+            {/* <p className={styles.stakeValue}>$2500 US</p> */}
           </div>
           <div className={styles.stakingDescription}>
             <p className={styles.stakeSubtitle}>STAKED</p>
             <p className={styles.stakeValue}>
               {formattedStakedBalance} {token}
             </p>
-            <p className={styles.stakeValue}>$0 US</p>
+            {/* <p className={styles.stakeValue}>$0 US</p> */}
           </div>
         </div>
         <div className={styles.stakeBtnContainer}>
-          <button onClick={handleStakeSubmit} className={styles.stakeBtn}>
+          <button
+            onClick={() => {
+              Swal.fire({
+                title: 'Input stake amount',
+                input: 'number',
+                inputAttributes: { step: 1 },
+                inputLabel: 'Stake amount',
+                inputPlaceholder: 'Enter your stake amount',
+                showCancelButton: true,
+                showLoaderOnConfirm: true,
+                allowOutsideClick: false,
+                scrollbarPadding: 0,
+                inputValidator: (value) => {
+                  if (value.startsWith('.')) {
+                    return 'Invalid input!';
+                  }
+                  if (value === '') {
+                    return 'Cannot be empty or zero!';
+                  }
+                },
+                preConfirm: async (stakeAmount) => {
+                  setIsStaking(true);
+                  const amountAsWei = utils.parseEther(stakeAmount);
+                  return approveAndStake(amountAsWei.toString());
+                },
+              }).then(async (result) => {
+                setIsStaking(false);
+                console.log(result);
+              });
+            }}
+            className={styles.stakeBtn}
+          >
             {isMining ? (
               <BeatLoader
                 className={styles.chainErrorLoading}
                 color="#36d7b7"
+              />
+            ) : isStaking ? (
+              <ClipLoader
+                color="#36d7b7"
+                loading={true}
+                // cssOverride={override}
+                size={20}
+                speedMultiplier={1}
               />
             ) : (
               'Stake'
             )}
           </button>
           <button onClick={handleUnstakeSubmit} className={styles.stakeBtn}>
-            Unstake
+            {isUnstakeMining ? (
+              <BeatLoader
+                className={styles.chainErrorLoading}
+                color="#36d7b7"
+              />
+            ) : isUnstaking ? (
+              <ClipLoader
+                color="#36d7b7"
+                loading={true}
+                // cssOverride={override}
+                size={20}
+                speedMultiplier={1}
+              />
+            ) : (
+              'Unstake'
+            )}
           </button>
         </div>
       </div>
@@ -152,7 +242,7 @@ export default function StakingCard({
           <div className={styles.stakingFooterDescription}>
             <p className={styles.stakeSubtitle}>Earned</p>
             <p className={styles.earnedValue}>0 {token}</p>
-            <p className={styles.earnedValue}>$0 US</p>
+            {/* <p className={styles.earnedValue}>$0 US</p> */}
           </div>
         </div>
         <div className={styles.withdrawBtnContainer}>

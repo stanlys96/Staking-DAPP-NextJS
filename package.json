@@ -10,6 +10,8 @@
   },
   "dependencies": {
     "@ethersproject/units": "^5.7.0",
+    "@material-ui/core": "^4.12.4",
+    "@material-ui/lab": "^4.0.0-alpha.61",
     "@usedapp/core": "^1.1.5",
     "axios": "^0.27.2",
     "bootstrap": "^5.2.0",
@@ -22,7 +24,7 @@
     "react-dom": "18.2.0",
     "react-moralis": "^1.4.2",
     "react-spinners": "^0.13.4",
-    "sweetalert2": "^11.4.33",
+    "sweetalert2": "^11.4.35",
     "web3uikit": "^1.0.4"
   },
   "devDependencies": {

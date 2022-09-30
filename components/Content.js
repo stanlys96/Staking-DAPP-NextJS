@@ -12,7 +12,9 @@ export default function Content() {
   // const chainString = chainId ? parseInt(chainId, 16).toString() : '31337';
   const chainString = chainId ? chainId.toString() : '31337';
   const dappTokenAddress = chainId
-    ? networkMapping[chainString]['DappToken'][0]
+    ? networkMapping[chainString]['DappToken'][
+        networkMapping[chainString]['DappToken'].length - 1
+      ]
     : constants.AddressZero;
   const wethTokenAddress = chainId
     ? networkConfig[chainString]['weth']

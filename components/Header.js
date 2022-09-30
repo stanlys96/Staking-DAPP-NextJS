@@ -1,12 +1,62 @@
 import styles from '../styles/Home.module.css';
 import { Icon } from '@iconify/react';
-import { useEffect } from 'react';
-import { useEthers } from '@usedapp/core';
+import { useEffect, useState } from 'react';
+import { useEthers, useNotifications } from '@usedapp/core';
+import { useGet10Dapp } from '../hooks';
+import { ClipLoader, BeatLoader } from 'react-spinners';
+import Swal from 'sweetalert2';
+
+const Toast = Swal.mixin({
+  toast: true,
+  position: 'center',
+  showConfirmButton: false,
+  timer: 3000,
+  timerProgressBar: true,
+  didOpen: (toast) => {
+    toast.addEventListener('mouseenter', Swal.stopTimer);
+    toast.addEventListener('mouseleave', Swal.resumeTimer);
+  },
+});
 
 export default function Header() {
   const { account, activateBrowserWallet, deactivate, chainId } = useEthers();
+  const { notifications } = useNotifications();
 
-  console.log(chainId, '<<<');
+  const { send: get10DappSend, state: get10DappState } = useGet10Dapp();
+
+  const isGet10DappMining = get10DappState.status === 'Mining';
+
+  const [showGet10DappSuccess, setShowGet10DappSuccess] = useState(false);
+  const [isGet10Dapp, setIsGet10Dapp] = useState(false);
+
+  const handleGet10DappSubmit = async () => {
+    setIsGet10Dapp(true);
+    await get10DappSend();
+    setIsGet10Dapp(false);
+    if (get10DappState.errorMessage === 'execution reverted') {
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: 'You have used your 10 DAPP quota for the day!',
+      });
+      return;
+    }
+  };
+
+  useEffect(() => {
+    if (
+      notifications.filter(
+        (notification) =>
+          notification.type === 'transactionSucceed' &&
+          notification.transactionName === 'Get 10 DAPP Token'
+      ).length > 0
+    ) {
+      Toast.fire({
+        icon: 'success',
+        title: 'Got 10 DAPP!',
+      });
+    }
+  }, [notifications, showGet10DappSuccess]);
 
   return (
     <div className={styles.navbar}>
@@ -20,6 +70,26 @@ export default function Header() {
           <span className={styles.totalBalanceValue}>$0</span>
           <span className={styles.totalBalancePercent}>+0%</span>
         </div>
+      </div>
+      <div>
+        <button
+          onClick={handleGet10DappSubmit}
+          className={styles.selectWalletBtn}
+        >
+          {isGet10DappMining ? (
+            <BeatLoader className={styles.chainErrorLoading} color="#36d7b7" />
+          ) : isGet10Dapp ? (
+            <ClipLoader
+              color="#36d7b7"
+              loading={true}
+              // cssOverride={override}
+              size={20}
+              speedMultiplier={1}
+            />
+          ) : (
+            'Get 10 DAPP (Once per day)'
+          )}
+        </button>
       </div>
       <div className={styles.profileContainer}>
         {!account && (

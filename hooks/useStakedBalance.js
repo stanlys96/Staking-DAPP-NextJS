@@ -10,7 +10,9 @@ export const useStakedBalance = (tokenAddress) => {
   const { account, chainId } = useEthers();
   const { abi } = TokenFarm;
   const tokenFarmAddress = chainId
-    ? networkMapping[chainId.toString()]['TokenFarm'][0]
+    ? networkMapping[chainId.toString()]['TokenFarm'][
+        networkMapping[chainId.toString()]['TokenFarm'].length - 1
+      ]
     : constants.AddressZero;
   const tokenFarmInterface = new utils.Interface(abi);
   const tokenFarmContract = new Contract(tokenFarmAddress, tokenFarmInterface);

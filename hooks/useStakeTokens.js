@@ -6,11 +6,13 @@ import ERC20 from '../chain-info/contracts/MockERC20.json';
 import { Contract } from '@ethersproject/contracts';
 import networkMapping from '../networkMapping.json';
 
-export const useStakeTokens = (tokenAddress) => {
+export const useStakeTokens = (tokenAddress, setIsStaking) => {
   const { chainId } = useEthers();
   const { abi } = TokenFarm;
   const tokenFarmAddress = chainId
-    ? networkMapping[chainId.toString()]['TokenFarm'][0]
+    ? networkMapping[chainId.toString()]['TokenFarm'][
+        networkMapping[chainId.toString()]['TokenFarm'].length - 1
+      ]
     : constants.AddressZero;
   const tokenFarmInterface = new utils.Interface(abi);
   const tokenFarmContract = new Contract(tokenFarmAddress, tokenFarmInterface);
@@ -34,14 +36,21 @@ export const useStakeTokens = (tokenAddress) => {
     }
   );
 
-  const approveAndStake = (amount) => {
+  const approveAndStake = async (amount) => {
     setAmountToStake(amount);
-    return approveErc20Send(tokenFarmAddress, amount);
+    await approveErc20Send(tokenFarmAddress, amount);
+    setIsStaking(false);
+  };
+
+  const sendingStake = async function (amountToStake, tokenAddress) {
+    await stakeSend(amountToStake, tokenAddress);
+    setIsStaking(false);
   };
 
   useEffect(() => {
     if (approveAndStakeErc20State.status === 'Success') {
-      stakeSend(amountToStake, tokenAddress);
+      setIsStaking(true);
+      sendingStake(amountToStake, tokenAddress);
     }
   }, [approveAndStakeErc20State, amountToStake, tokenAddress]);
 

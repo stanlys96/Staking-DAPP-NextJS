@@ -53,7 +53,9 @@ export default function StakingCard({
     account ? account : constants.AddressZero,
     { chainId: 5 }
   );
-  const formattedTokenBalance = tokenBalance
+  const formattedTokenBalance = !account
+    ? 0
+    : tokenBalance
     ? parseFloat(formatUnits(tokenBalance, 18))
     : 0;
   const { approveAndStake, state: approveAndStakeErc20State } = useStakeTokens(

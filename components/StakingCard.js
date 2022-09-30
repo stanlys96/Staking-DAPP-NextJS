@@ -100,8 +100,10 @@ export default function StakingCard({
 
   useEffect(() => {
     if (result) {
-      if (result.value.length > 0) {
-        setStakedValue(result.value[0].toString());
+      if (result.value) {
+        if (result.value.length > 0) {
+          setStakedValue(result.value[0].toString());
+        }
       }
     }
   }, [result]);

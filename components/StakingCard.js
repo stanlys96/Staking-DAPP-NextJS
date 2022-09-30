@@ -90,9 +90,11 @@ export default function StakingCard({
   const [showErc20ApprovalSuccess, setShowErc20ApprovalSuccess] =
     useState(false);
   const [showStakeTokenSuccess, setShowStakeTokenSuccess] = useState(false);
+  const [showUnstakeTokenSuccess, setShowUnstakeTokenSuccess] = useState(false);
   const handleCloseSnack = () => {
     setShowErc20ApprovalSuccess(false);
     setShowStakeTokenSuccess(false);
+    setShowUnstakeTokenSuccess(false);
   };
 
   const result = useStakedBalance(tokenAddress);
@@ -141,6 +143,21 @@ export default function StakingCard({
       setShowStakeTokenSuccess(true);
     }
   }, [notifications, showErc20ApprovalSuccess, showStakeTokenSuccess]);
+
+  useEffect(() => {
+    if (
+      notifications.filter(
+        (notification) =>
+          notification.type === 'transactionSucceed' &&
+          notification.transactionName === 'Unstake Tokens'
+      ).length > 0
+    ) {
+      Toast.fire({
+        icon: 'success',
+        title: 'Unstake success!',
+      });
+    }
+  }, [notifications, showUnstakeTokenSuccess]);
 
   return (
     <div className={styles.stakingCard}>

@@ -63,7 +63,8 @@ export default function StakingCard({
     setIsStaking
   );
 
-  const { unstakeTokens, unstakeState } = useUnstakeTokens(tokenAddress);
+  const { send: unstakeTokens, state: unstakeState } =
+    useUnstakeTokens(tokenAddress);
 
   const isMining = approveAndStakeErc20State.status === 'Mining';
   const isUnstakeMining = unstakeState.status === 'Mining';
@@ -206,7 +207,7 @@ export default function StakingCard({
                   if (value.startsWith('.')) {
                     return 'Invalid input!';
                   }
-                  if (value === '') {
+                  if (value === '' || parseFloat(value) === 0) {
                     return 'Cannot be empty or zero!';
                   }
                 },
@@ -239,7 +240,41 @@ export default function StakingCard({
               'Stake'
             )}
           </button>
-          <button onClick={handleUnstakeSubmit} className={styles.stakeBtn}>
+          <button
+            onClick={() => {
+              Swal.fire({
+                title: 'Input unstake amount',
+                input: 'number',
+                inputAttributes: { step: 1 },
+                inputLabel: 'Unstake amount',
+                inputPlaceholder: 'Enter your unstake amount',
+                showCancelButton: true,
+                showLoaderOnConfirm: true,
+                allowOutsideClick: false,
+                scrollbarPadding: 0,
+                inputValidator: (value) => {
+                  if (parseFloat(value) > parseFloat(formattedStakedBalance)) {
+                    return 'Cannot exceed staked amount!';
+                  }
+                  if (value.startsWith('.')) {
+                    return 'Invalid input!';
+                  }
+                  if (value === '' || parseFloat(value) === 0) {
+                    return 'Cannot be empty or zero!';
+                  }
+                },
+                preConfirm: async (stakeAmount) => {
+                  setIsUnstaking(true);
+                  const amountAsWei = utils.parseEther(stakeAmount);
+                  return unstakeTokens(tokenAddress, amountAsWei.toString());
+                },
+              }).then(async (result) => {
+                setIsUnstaking(false);
+                console.log(result);
+              });
+            }}
+            className={styles.stakeBtn}
+          >
             {isUnstakeMining ? (
               <BeatLoader
                 className={styles.chainErrorLoading}

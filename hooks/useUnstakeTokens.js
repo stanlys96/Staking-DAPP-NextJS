@@ -5,7 +5,7 @@ import TokenFarm from '../chain-info/contracts/TokenFarm.json';
 import { Contract } from '@ethersproject/contracts';
 import networkMapping from '../networkMapping.json';
 
-export const useUnstakeTokens = (tokenAddress) => {
+export const useUnstakeTokens = () => {
   const { chainId } = useEthers();
   const { abi } = TokenFarm;
   const tokenFarmAddress = chainId
@@ -16,15 +16,7 @@ export const useUnstakeTokens = (tokenAddress) => {
   const tokenFarmInterface = new utils.Interface(abi);
   const tokenFarmContract = new Contract(tokenFarmAddress, tokenFarmInterface);
 
-  const { send: unstakeSend, state: unstakeState } = useContractFunction(
-    tokenFarmContract,
-    'unstakeTokens',
-    { transactionName: 'Unstake Tokens' }
-  );
-
-  const unstakeTokens = () => {
-    return unstakeSend(tokenAddress);
-  };
-
-  return { unstakeTokens, unstakeState };
+  return useContractFunction(tokenFarmContract, 'unstakeTokens', {
+    transactionName: 'Unstake Tokens',
+  });
 };

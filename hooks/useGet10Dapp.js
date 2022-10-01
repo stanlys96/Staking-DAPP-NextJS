@@ -9,8 +9,8 @@ export const useGet10Dapp = () => {
 
   const { abi } = TokenFarm;
   const tokenFarmContractAddress = chainId
-    ? networkMapping[chainId.toString()]['TokenFarm'][
-        networkMapping[chainId.toString()]['TokenFarm'].length - 1
+    ? networkMapping['5']['TokenFarm'][
+        networkMapping['5']['TokenFarm'].length - 1
       ]
     : constants.AddressZero;
   const tokenFarmInterface = new utils.Interface(abi);

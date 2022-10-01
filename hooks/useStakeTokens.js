@@ -10,8 +10,8 @@ export const useStakeTokens = (tokenAddress, setIsStaking) => {
   const { chainId } = useEthers();
   const { abi } = TokenFarm;
   const tokenFarmAddress = chainId
-    ? networkMapping[chainId.toString()]['TokenFarm'][
-        networkMapping[chainId.toString()]['TokenFarm'].length - 1
+    ? networkMapping['5']['TokenFarm'][
+        networkMapping['5']['TokenFarm'].length - 1
       ]
     : constants.AddressZero;
   const tokenFarmInterface = new utils.Interface(abi);

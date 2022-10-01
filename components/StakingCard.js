@@ -30,12 +30,6 @@ const Toast = Swal.mixin({
   },
 });
 
-// const override = {
-//   display: 'block',
-//   margin: '0 auto',
-//   borderColor: '#ffffff',
-// };
-
 export default function StakingCard({
   imgUrl,
   stakeTitle,
@@ -51,7 +45,7 @@ export default function StakingCard({
   const tokenBalance = useTokenBalance(
     tokenAddress,
     account ? account : constants.AddressZero,
-    { chainId: 5 }
+    { chainId }
   );
   const formattedTokenBalance = !account
     ? 0
@@ -99,7 +93,9 @@ export default function StakingCard({
   };
 
   const result = useStakedBalance(tokenAddress);
-  const formattedStakedBalance = stakedValue
+  const formattedStakedBalance = !account
+    ? 0
+    : stakedValue
     ? parseFloat(formatUnits(stakedValue, 18))
     : 0;
 
@@ -108,8 +104,14 @@ export default function StakingCard({
       if (result.value) {
         if (result.value.length > 0) {
           setStakedValue(result.value[0].toString());
+        } else {
+          setStakedValue(0);
         }
+      } else {
+        setStakedValue(0);
       }
+    } else {
+      setStakedValue(0);
     }
   }, [result]);
 
@@ -193,6 +195,22 @@ export default function StakingCard({
         <div className={styles.stakeBtnContainer}>
           <button
             onClick={() => {
+              if (!account) {
+                Swal.fire({
+                  icon: 'error',
+                  title: 'Oops...',
+                  text: 'No account connected!',
+                });
+                return;
+              }
+              if (chainId !== 5) {
+                Swal.fire({
+                  icon: 'error',
+                  title: 'Oops...',
+                  text: 'Please connect to Goerli network!',
+                });
+                return;
+              }
               Swal.fire({
                 title: 'Input stake amount',
                 input: 'number',
@@ -242,6 +260,22 @@ export default function StakingCard({
           </button>
           <button
             onClick={() => {
+              if (!account) {
+                Swal.fire({
+                  icon: 'error',
+                  title: 'Oops...',
+                  text: 'No account connected!',
+                });
+                return;
+              }
+              if (chainId !== 5) {
+                Swal.fire({
+                  icon: 'error',
+                  title: 'Oops...',
+                  text: 'Please connect to Goerli network!',
+                });
+                return;
+              }
               Swal.fire({
                 title: 'Input unstake amount',
                 input: 'number',
@@ -303,7 +337,29 @@ export default function StakingCard({
           </div>
         </div>
         <div className={styles.withdrawBtnContainer}>
-          <button className={styles.withdrawBtn}>Withdraw</button>
+          <button
+            onClick={() => {
+              if (!account) {
+                Swal.fire({
+                  icon: 'error',
+                  title: 'Oops...',
+                  text: 'No account connected!',
+                });
+                return;
+              }
+              if (chainId !== 5) {
+                Swal.fire({
+                  icon: 'error',
+                  title: 'Oops...',
+                  text: 'Please connect to Goerli network!',
+                });
+                return;
+              }
+            }}
+            className={styles.withdrawBtn}
+          >
+            Withdraw
+          </button>
         </div>
       </div>
     </div>

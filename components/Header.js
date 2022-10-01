@@ -28,8 +28,25 @@ export default function Header() {
 
   const [showGet10DappSuccess, setShowGet10DappSuccess] = useState(false);
   const [isGet10Dapp, setIsGet10Dapp] = useState(false);
+  console.log(chainId, '<<<');
 
   const handleGet10DappSubmit = async () => {
+    if (!account) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: 'No account connected yet!',
+      });
+      return;
+    }
+    if (chainId !== 5) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: 'Please connect to Goerli network!',
+      });
+      return;
+    }
     setIsGet10Dapp(true);
     await get10DappSend();
     setIsGet10Dapp(false);

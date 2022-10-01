@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { useEthers, useNotifications } from '@usedapp/core';
 import { useGet10Dapp } from '../hooks';
 import { ClipLoader, BeatLoader } from 'react-spinners';
+import { useGetUserTotalValue } from '../hooks';
 import Swal from 'sweetalert2';
 
 const Toast = Swal.mixin({
@@ -28,7 +29,8 @@ export default function Header() {
 
   const [showGet10DappSuccess, setShowGet10DappSuccess] = useState(false);
   const [isGet10Dapp, setIsGet10Dapp] = useState(false);
-  console.log(chainId, '<<<');
+
+  const [userTotalValue, setUserTotalValue] = useState(0);
 
   const handleGet10DappSubmit = async () => {
     if (!account) {
@@ -60,6 +62,24 @@ export default function Header() {
     }
   };
 
+  const userTotalValueResult = useGetUserTotalValue();
+
+  useEffect(() => {
+    if (userTotalValueResult) {
+      if (userTotalValueResult.value) {
+        if (userTotalValueResult.value.length > 0) {
+          setUserTotalValue(userTotalValueResult.value[0].toString());
+        } else {
+          setUserTotalValue(0);
+        }
+      } else {
+        setUserTotalValue(0);
+      }
+    } else {
+      setUserTotalValue(0);
+    }
+  }, [userTotalValueResult]);
+
   useEffect(() => {
     if (
       notifications.filter(
@@ -84,8 +104,10 @@ export default function Header() {
         <div className={styles.totalBalanceContainer}>
           <span className={styles.totalBalanceText}>Total balance</span>
           <div className={styles.verticalRule}></div>
-          <span className={styles.totalBalanceValue}>$0</span>
-          <span className={styles.totalBalancePercent}>+0%</span>
+          <span className={styles.totalBalanceValue}>
+            ${(userTotalValue / 10 ** 18).toFixed(2)}
+          </span>
+          {/* <span className={styles.totalBalancePercent}>+0%</span> */}
         </div>
       </div>
       <div>

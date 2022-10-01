@@ -14,7 +14,12 @@ import ERC20 from '../chain-info/contracts/MockERC20.json';
 import { Contract } from '@ethersproject/contracts';
 import networkMapping from '../networkMapping.json';
 import { constants, utils } from 'ethers';
-import { useStakeTokens, useStakedBalance, useUnstakeTokens } from '../hooks';
+import {
+  useStakeTokens,
+  useStakedBalance,
+  useUnstakeTokens,
+  useGetTokenValue,
+} from '../hooks';
 import { ClipLoader, BeatLoader } from 'react-spinners';
 import Swal from 'sweetalert2';
 
@@ -40,6 +45,7 @@ export default function StakingCard({
   const { notifications } = useNotifications();
   const [amount, setAmount] = useState(0);
   const [stakedValue, setStakedValue] = useState(0);
+  const [valueInUsd, setValueInUsd] = useState(0);
   const [isStaking, setIsStaking] = useState(false);
   const [isUnstaking, setIsUnstaking] = useState(false);
   const tokenBalance = useTokenBalance(
@@ -50,8 +56,9 @@ export default function StakingCard({
   const formattedTokenBalance = !account
     ? 0
     : tokenBalance
-    ? parseFloat(formatUnits(tokenBalance, 18))
+    ? parseFloat(formatUnits(tokenBalance, 18)).toFixed(2)
     : 0;
+
   const { approveAndStake, state: approveAndStakeErc20State } = useStakeTokens(
     tokenAddress,
     setIsStaking
@@ -62,6 +69,8 @@ export default function StakingCard({
 
   const isMining = approveAndStakeErc20State.status === 'Mining';
   const isUnstakeMining = unstakeState.status === 'Mining';
+
+  const tokenValueResult = useGetTokenValue(tokenAddress);
 
   const handleInputChange = (event) => {
     const newAmount =
@@ -86,17 +95,19 @@ export default function StakingCard({
     useState(false);
   const [showStakeTokenSuccess, setShowStakeTokenSuccess] = useState(false);
   const [showUnstakeTokenSuccess, setShowUnstakeTokenSuccess] = useState(false);
+
   const handleCloseSnack = () => {
     setShowErc20ApprovalSuccess(false);
     setShowStakeTokenSuccess(false);
     setShowUnstakeTokenSuccess(false);
+    setShowDepositETHSuccess(false);
   };
 
   const result = useStakedBalance(tokenAddress);
   const formattedStakedBalance = !account
     ? 0
     : stakedValue
-    ? parseFloat(formatUnits(stakedValue, 18))
+    ? parseFloat(formatUnits(stakedValue, 18)).toFixed(2)
     : 0;
 
   useEffect(() => {
@@ -114,6 +125,29 @@ export default function StakingCard({
       setStakedValue(0);
     }
   }, [result]);
+
+  useEffect(() => {
+    if (tokenValueResult) {
+      if (tokenValueResult.value) {
+        if (tokenValueResult.value.length > 0) {
+          const price = parseFloat(
+            tokenValueResult.value[0].toString()
+          ).toFixed(2);
+          const decimals = parseFloat(
+            tokenValueResult.value[1].toString()
+          ).toFixed(2);
+          const thePrice = price / 10 ** decimals;
+          setValueInUsd(thePrice);
+        } else {
+          setValueInUsd(0);
+        }
+      } else {
+        setValueInUsd(0);
+      }
+    } else {
+      setValueInUsd(0);
+    }
+  }, [tokenValueResult]);
 
   useEffect(() => {
     if (
@@ -182,14 +216,18 @@ export default function StakingCard({
             <p className={styles.stakeValue}>
               {formattedTokenBalance} {token}
             </p>
-            {/* <p className={styles.stakeValue}>$2500 US</p> */}
+            <p className={styles.stakeValue}>
+              ${(valueInUsd * formattedTokenBalance).toFixed(2)} US
+            </p>
           </div>
           <div className={styles.stakingDescription}>
             <p className={styles.stakeSubtitle}>STAKED</p>
             <p className={styles.stakeValue}>
               {formattedStakedBalance} {token}
             </p>
-            {/* <p className={styles.stakeValue}>$0 US</p> */}
+            <p className={styles.stakeValue}>
+              ${(valueInUsd * formattedStakedBalance).toFixed(2)} US
+            </p>
           </div>
         </div>
         <div className={styles.stakeBtnContainer}>
@@ -333,7 +371,7 @@ export default function StakingCard({
           <div className={styles.stakingFooterDescription}>
             <p className={styles.stakeSubtitle}>Earned</p>
             <p className={styles.earnedValue}>0 {token}</p>
-            {/* <p className={styles.earnedValue}>$0 US</p> */}
+            <p className={styles.earnedValue}>$0.00 US</p>
           </div>
         </div>
         <div className={styles.withdrawBtnContainer}>

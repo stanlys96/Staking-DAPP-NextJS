@@ -101,6 +101,30 @@
   align-items: center;
 }
 
+/* Deposit Withdraw */
+.depositWithdrawContainer {
+  margin-top: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.depositEthBtn {
+  background-color: #5868ce;
+  color: #cad9ff;
+  border: 2px solid #5868ce;
+  padding: 5px 15px !important;
+  margin-right: 15px;
+}
+
+.withdrawEthBtn {
+  background-color: transparent;
+  color: #8487ba;
+  border: 2px solid #d8d8e9;
+  padding: 5px 15px !important;
+  margin-left: 15px;
+}
+
 /* Staking */
 .stakingCard {
   border: 2px solid #ececf5;
@@ -136,7 +160,7 @@
 .stakeBtnContainer {
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: space-around;
   margin-left: 15px;
 }
 
@@ -171,7 +195,8 @@
   color: #9ca0c8;
 }
 
-.stakeBtn:hover {
+.stakeBtn:hover,
+.withdrawEthBtn:hover {
   color: #d8d8e9;
   background-color: #5c68ce;
   border: 2px solid #5c68ce;
@@ -179,7 +204,9 @@
 
 .stakeBtn,
 .withdrawBtn,
-.selectWalletBtn {
+.selectWalletBtn,
+.depositEthBtn,
+.withdrawEthBtn {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -191,7 +218,8 @@
 }
 
 .withdrawBtn:hover,
-.selectWalletBtn:hover {
+.selectWalletBtn:hover,
+.depositEthBtn:hover {
   background-color: #0e1f8c;
   border: 2px solid #0e1f8c;
 }

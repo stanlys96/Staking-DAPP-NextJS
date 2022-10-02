@@ -257,7 +257,7 @@ export default function StakingCard({
               {formattedTokenBalance.toFixed(4)} {token}
             </p>
             <p className={styles.stakeValue}>
-              {(valueInUsd * formattedTokenBalance).toFixed(4)} USD
+              ${(valueInUsd * formattedTokenBalance).toFixed(4)} US
             </p>
           </div>
           <div className={styles.stakingDescription}>
@@ -266,7 +266,7 @@ export default function StakingCard({
               {formattedStakedBalance.toFixed(4)} {token}
             </p>
             <p className={styles.stakeValue}>
-              {(valueInUsd * formattedStakedBalance).toFixed(4)} USD
+              ${(valueInUsd * formattedStakedBalance).toFixed(4)} US
             </p>
           </div>
         </div>
@@ -419,7 +419,7 @@ export default function StakingCard({
             <p className={styles.stakeSubtitle}>Earned</p>
             <p className={styles.earnedValue}>{rewardValue.toFixed(4)} DAPP</p>
             <p className={styles.earnedValue}>
-              {(dappTokenValue * rewardValue).toFixed(4)} USD
+              ${(dappTokenValue * rewardValue).toFixed(4)} US
             </p>
           </div>
         </div>

@@ -56,7 +56,7 @@ export default function Header() {
       Swal.fire({
         icon: 'error',
         title: 'Oops...',
-        text: 'You have used your 10 DAPP quota for the day!',
+        text: 'You have used your 100 DAPP quota for the day!',
       });
       return;
     }

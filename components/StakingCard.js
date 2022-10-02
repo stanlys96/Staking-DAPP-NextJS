@@ -278,6 +278,7 @@ export default function StakingCard({
                   icon: 'error',
                   title: 'Oops...',
                   text: 'No account connected!',
+                  scrollbarPadding: 0,
                 });
                 return;
               }
@@ -286,6 +287,7 @@ export default function StakingCard({
                   icon: 'error',
                   title: 'Oops...',
                   text: 'Please connect to Goerli network!',
+                  scrollbarPadding: 0,
                 });
                 return;
               }
@@ -346,6 +348,7 @@ export default function StakingCard({
                   icon: 'error',
                   title: 'Oops...',
                   text: 'No account connected!',
+                  scrollbarPadding: 0,
                 });
                 return;
               }
@@ -354,6 +357,7 @@ export default function StakingCard({
                   icon: 'error',
                   title: 'Oops...',
                   text: 'Please connect to Goerli network!',
+                  scrollbarPadding: 0,
                 });
                 return;
               }
@@ -427,6 +431,7 @@ export default function StakingCard({
                   icon: 'error',
                   title: 'Oops...',
                   text: 'No account connected!',
+                  scrollbarPadding: 0,
                 });
                 return;
               }
@@ -435,6 +440,7 @@ export default function StakingCard({
                   icon: 'error',
                   title: 'Oops...',
                   text: 'Please connect to Goerli network!',
+                  scrollbarPadding: 0,
                 });
                 return;
               }
@@ -443,6 +449,7 @@ export default function StakingCard({
                   icon: 'error',
                   title: 'Oops...',
                   text: "You don't have any reward to withdraw!",
+                  scrollbarPadding: 0,
                 });
                 return;
               }

@@ -38,6 +38,7 @@ export default function Header() {
         icon: 'error',
         title: 'Oops...',
         text: 'No account connected yet!',
+        scrollbarPadding: 0,
       });
       return;
     }
@@ -46,6 +47,7 @@ export default function Header() {
         icon: 'error',
         title: 'Oops...',
         text: 'Please connect to Goerli network!',
+        scrollbarPadding: 0,
       });
       return;
     }
@@ -95,6 +97,7 @@ export default function Header() {
           icon: 'error',
           title: 'Oops...',
           text: 'You have used your 100 DAPP quota for the day!',
+          scrollbarPadding: 0,
         });
       }
     }

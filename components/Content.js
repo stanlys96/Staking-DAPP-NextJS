@@ -97,6 +97,7 @@ export default function Content() {
           icon: 'error',
           title: 'Oops...',
           text: 'No WETH found or too much WETH entered!',
+          scrollbarPadding: 0,
         });
       }
     }
@@ -109,6 +110,7 @@ export default function Content() {
           icon: 'error',
           title: 'Oops...',
           text: 'No ETH found or too much ETH entered!',
+          scrollbarPadding: 0,
         });
       }
     }
@@ -192,6 +194,7 @@ export default function Content() {
                   icon: 'error',
                   title: 'Oops...',
                   text: 'No account connected!',
+                  scrollbarPadding: 0,
                 });
                 return;
               }
@@ -200,6 +203,7 @@ export default function Content() {
                   icon: 'error',
                   title: 'Oops...',
                   text: 'Please connect to Goerli network!',
+                  scrollbarPadding: 0,
                 });
                 return;
               }
@@ -260,6 +264,7 @@ export default function Content() {
                   icon: 'error',
                   title: 'Oops...',
                   text: 'No account connected!',
+                  scrollbarPadding: 0,
                 });
                 return;
               }
@@ -268,6 +273,7 @@ export default function Content() {
                   icon: 'error',
                   title: 'Oops...',
                   text: 'Please connect to Goerli network!',
+                  scrollbarPadding: 0,
                 });
                 return;
               }

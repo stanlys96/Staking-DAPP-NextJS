@@ -53,7 +53,7 @@ export default function StakingCard({
   const formattedTokenBalance = !account
     ? 0
     : tokenBalance
-    ? Math.floor(formatUnits(tokenBalance, 18) * 100) / 100
+    ? Math.floor(formatUnits(tokenBalance, 18) * 10000) / 10000
     : 0;
 
   const { approveAndStake, state: approveAndStakeErc20State } = useStakeTokens(
@@ -112,7 +112,7 @@ export default function StakingCard({
   const formattedStakedBalance = !account
     ? 0
     : stakedValue
-    ? Math.floor(formatUnits(stakedValue, 18) * 100) / 100
+    ? Math.floor(formatUnits(stakedValue, 18) * 10000) / 10000
     : 0;
 
   useEffect(() => {
@@ -160,8 +160,8 @@ export default function StakingCard({
         if (stakingRewardResult.value.length > 0) {
           const reward =
             Math.floor(
-              formatUnits(stakingRewardResult.value[0].toString(), 18) * 100
-            ) / 100;
+              formatUnits(stakingRewardResult.value[0].toString(), 18) * 10000
+            ) / 10000;
           setRewardValue(reward);
         } else {
           setRewardValue(0);
@@ -254,19 +254,19 @@ export default function StakingCard({
           <div className={styles.stakingDescription}>
             <p className={styles.stakeSubtitle}>Available to STAKE</p>
             <p className={styles.stakeValue}>
-              {formattedTokenBalance.toFixed(2)} {token}
+              {formattedTokenBalance.toFixed(4)} {token}
             </p>
             <p className={styles.stakeValue}>
-              ${(valueInUsd * formattedTokenBalance).toFixed(2)} US
+              ${(valueInUsd * formattedTokenBalance).toFixed(4)} US
             </p>
           </div>
           <div className={styles.stakingDescription}>
             <p className={styles.stakeSubtitle}>STAKED</p>
             <p className={styles.stakeValue}>
-              {formattedStakedBalance.toFixed(2)} {token}
+              {formattedStakedBalance.toFixed(4)} {token}
             </p>
             <p className={styles.stakeValue}>
-              ${(valueInUsd * formattedStakedBalance).toFixed(2)} US
+              ${(valueInUsd * formattedStakedBalance).toFixed(4)} US
             </p>
           </div>
         </div>
@@ -413,9 +413,9 @@ export default function StakingCard({
         <div>
           <div className={styles.stakingFooterDescription}>
             <p className={styles.stakeSubtitle}>Earned</p>
-            <p className={styles.earnedValue}>{rewardValue.toFixed(2)} DAPP</p>
+            <p className={styles.earnedValue}>{rewardValue.toFixed(4)} DAPP</p>
             <p className={styles.earnedValue}>
-              ${(dappTokenValue * rewardValue).toFixed(2)} US
+              ${(dappTokenValue * rewardValue).toFixed(4)} US
             </p>
           </div>
         </div>

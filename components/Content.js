@@ -70,7 +70,7 @@ export default function Content() {
   const formattedEtherBalance =
     !account || !currentEtherBalance
       ? 0
-      : Math.floor(formatUnits(currentEtherBalance, 18) * 100) / 100;
+      : Math.floor(formatUnits(currentEtherBalance, 18) * 10000) / 10000;
 
   const wethTokenBalance = useTokenBalance(
     wethTokenAddress,
@@ -81,7 +81,7 @@ export default function Content() {
   const formattedWethTokenBalance = !account
     ? 0
     : wethTokenBalance
-    ? Math.floor(formatUnits(wethTokenBalance, 18) * 100) / 100
+    ? Math.floor(formatUnits(wethTokenBalance, 18) * 10000) / 10000
     : 0;
 
   const { send: depositETH, state: depositETHState } = useDepositETH();
@@ -150,10 +150,10 @@ export default function Content() {
         if (dappTokenValueResult.value.length > 0) {
           const price = parseFloat(
             dappTokenValueResult.value[0].toString()
-          ).toFixed(2);
+          ).toFixed(4);
           const decimals = parseFloat(
             dappTokenValueResult.value[1].toString()
-          ).toFixed(2);
+          ).toFixed(4);
           const thePrice = price / 10 ** decimals;
           setDappTokenValue(thePrice);
         } else {

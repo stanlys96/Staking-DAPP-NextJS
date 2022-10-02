@@ -1,6 +1,6 @@
 .container {
   /* padding: 0 2rem; */
-  height: 100vh;
+  min-height: 100vh;
   /* position: relative; */
 }
 
@@ -302,7 +302,7 @@
 .sidebarContainer {
   background-color: #5768cb;
   padding: 2rem;
-  height: 100vh;
+  min-height: 100vh;
   position: relative;
   color: #fff;
 }

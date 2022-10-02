@@ -74,7 +74,6 @@ export default function Header() {
   }, [userTotalValueResult]);
 
   useEffect(() => {
-    console.log(notifications, '!!!!');
     if (
       notifications.filter(
         (notification) =>

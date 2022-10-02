@@ -4,11 +4,17 @@ import StakingCard from './StakingCard';
 import { constants, utils } from 'ethers';
 import networkMapping from '../networkMapping.json';
 import networkConfig from '../networkConfig.json';
-import { useEthers, useNotifications } from '@usedapp/core';
+import {
+  useEthers,
+  useNotifications,
+  useTokenBalance,
+  useEtherBalance,
+} from '@usedapp/core';
 import { useDepositETH, useWithdrawETH, useGetTokenValue } from '../hooks';
 import React, { useEffect, useState } from 'react';
 import { ClipLoader, BeatLoader } from 'react-spinners';
 import Swal from 'sweetalert2';
+import { formatUnits } from '@ethersproject/units';
 
 const Toast = Swal.mixin({
   toast: true,
@@ -59,11 +65,54 @@ export default function Content() {
 
   const dappTokenValueResult = useGetTokenValue(dappTokenAddress);
 
+  const currentEtherBalance = useEtherBalance(account);
+
+  const formattedEtherBalance =
+    !account || !currentEtherBalance
+      ? 0
+      : Math.floor(formatUnits(currentEtherBalance, 18) * 100) / 100;
+
+  const wethTokenBalance = useTokenBalance(
+    wethTokenAddress,
+    account ? account : constants.AddressZero,
+    { chainId: 5 }
+  );
+
+  const formattedWethTokenBalance = !account
+    ? 0
+    : wethTokenBalance
+    ? Math.floor(formatUnits(wethTokenBalance, 18) * 100) / 100
+    : 0;
+
   const { send: depositETH, state: depositETHState } = useDepositETH();
   const { send: withdrawETH, state: withdrawETHState } = useWithdrawETH();
 
   const isDepositETHMining = depositETHState.status === 'Mining';
   const isWithdrawETHMining = withdrawETHState.status === 'Mining';
+
+  useEffect(() => {
+    if (withdrawETHState.errorMessage) {
+      if (withdrawETHState.errorMessage === 'execution reverted') {
+        Swal.fire({
+          icon: 'error',
+          title: 'Oops...',
+          text: 'No WETH found or too much WETH entered!',
+        });
+      }
+    }
+  }, [withdrawETHState]);
+
+  useEffect(() => {
+    if (depositETHState.errorMessage) {
+      if (depositETHState.errorMessage === 'execution reverted') {
+        Swal.fire({
+          icon: 'error',
+          title: 'Oops...',
+          text: 'No ETH found or too much ETH entered!',
+        });
+      }
+    }
+  }, [depositETHState]);
 
   useEffect(() => {
     if (
@@ -171,6 +220,9 @@ export default function Content() {
                   if (value === '' || parseFloat(value) === 0) {
                     return 'Cannot be empty or zero!';
                   }
+                  if (parseFloat(value) > formattedEtherBalance) {
+                    return "You don't have that much Ether!";
+                  }
                 },
                 preConfirm: async (depositAmount) => {
                   setIsDepositing(true);
@@ -235,6 +287,9 @@ export default function Content() {
                   }
                   if (value === '' || parseFloat(value) === 0) {
                     return 'Cannot be empty or zero!';
+                  }
+                  if (parseFloat(value) > formattedWethTokenBalance) {
+                    return "You don't have that much WETH!";
                   }
                 },
                 preConfirm: async (withdrawAmount) => {

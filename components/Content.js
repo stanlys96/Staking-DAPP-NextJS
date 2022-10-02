@@ -126,7 +126,7 @@ export default function Content() {
     ) {
       Toast.fire({
         icon: 'success',
-        title: 'ETH deposited!',
+        title: 'WETH deposited!',
       });
     }
   }, [notifications, showDepositETHSuccess]);
@@ -141,7 +141,7 @@ export default function Content() {
     ) {
       Toast.fire({
         icon: 'success',
-        title: 'ETH withdrawn!',
+        title: 'WETH withdrawn!',
       });
     }
   }, [notifications, showWithdrawETHSuccess]);
@@ -324,7 +324,7 @@ export default function Content() {
                 speedMultiplier={1}
               />
             ) : (
-              'Withdraw ETH'
+              'Withdraw WETH'
             )}
           </button>
         </div>

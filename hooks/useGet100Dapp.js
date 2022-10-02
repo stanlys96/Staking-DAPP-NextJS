@@ -4,7 +4,7 @@ import { utils, constants } from 'ethers';
 import { Contract } from '@ethersproject/contracts';
 import networkMapping from '../networkMapping.json';
 
-export const useGet10Dapp = () => {
+export const useGet100Dapp = () => {
   const { chainId } = useEthers();
 
   const { abi } = TokenFarm;
@@ -19,7 +19,7 @@ export const useGet10Dapp = () => {
     tokenFarmInterface
   );
 
-  return useContractFunction(tokenFarmContract, 'get10DappToken', {
-    transactionName: 'Get 10 DAPP Token',
+  return useContractFunction(tokenFarmContract, 'get100DappToken', {
+    transactionName: 'Get 100 DAPP Token',
   });
 };

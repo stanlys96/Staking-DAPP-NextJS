@@ -2,7 +2,7 @@ import styles from '../styles/Home.module.css';
 import { Icon } from '@iconify/react';
 import { useEffect, useState } from 'react';
 import { useEthers, useNotifications } from '@usedapp/core';
-import { useGet10Dapp } from '../hooks';
+import { useGet100Dapp } from '../hooks';
 import { ClipLoader, BeatLoader } from 'react-spinners';
 import { useGetUserTotalValue } from '../hooks';
 import Swal from 'sweetalert2';
@@ -23,16 +23,16 @@ export default function Header() {
   const { account, activateBrowserWallet, deactivate, chainId } = useEthers();
   const { notifications } = useNotifications();
 
-  const { send: get10DappSend, state: get10DappState } = useGet10Dapp();
+  const { send: get100DappSend, state: get100DappState } = useGet100Dapp();
 
-  const isGet10DappMining = get10DappState.status === 'Mining';
+  const isGet100DappMining = get100DappState.status === 'Mining';
 
-  const [showGet10DappSuccess, setShowGet10DappSuccess] = useState(false);
-  const [isGet10Dapp, setIsGet10Dapp] = useState(false);
+  const [showGet100DappSuccess, setShowGet100DappSuccess] = useState(false);
+  const [isGet100Dapp, setIsGet100Dapp] = useState(false);
 
   const [userTotalValue, setUserTotalValue] = useState(0);
 
-  const handleGet10DappSubmit = async () => {
+  const handleGet100DappSubmit = async () => {
     if (!account) {
       Swal.fire({
         icon: 'error',
@@ -49,10 +49,10 @@ export default function Header() {
       });
       return;
     }
-    setIsGet10Dapp(true);
-    await get10DappSend();
-    setIsGet10Dapp(false);
-    if (get10DappState.errorMessage === 'execution reverted') {
+    setIsGet100Dapp(true);
+    await get100DappSend();
+    setIsGet100Dapp(false);
+    if (get100DappState.errorMessage === 'execution reverted') {
       Swal.fire({
         icon: 'error',
         title: 'Oops...',
@@ -85,15 +85,15 @@ export default function Header() {
       notifications.filter(
         (notification) =>
           notification.type === 'transactionSucceed' &&
-          notification.transactionName === 'Get 10 DAPP Token'
+          notification.transactionName === 'Get 100 DAPP Token'
       ).length > 0
     ) {
       Toast.fire({
         icon: 'success',
-        title: 'Got 10 DAPP!',
+        title: 'Got 100 DAPP!',
       });
     }
-  }, [notifications, showGet10DappSuccess]);
+  }, [notifications, showGet100DappSuccess]);
 
   return (
     <div className={styles.navbar}>
@@ -112,12 +112,12 @@ export default function Header() {
       </div>
       <div>
         <button
-          onClick={handleGet10DappSubmit}
+          onClick={handleGet100DappSubmit}
           className={styles.selectWalletBtn}
         >
-          {isGet10DappMining ? (
+          {isGet100DappMining ? (
             <BeatLoader className={styles.chainErrorLoading} color="#36d7b7" />
-          ) : isGet10Dapp ? (
+          ) : isGet100Dapp ? (
             <ClipLoader
               color="#36d7b7"
               loading={true}
@@ -126,7 +126,7 @@ export default function Header() {
               speedMultiplier={1}
             />
           ) : (
-            'Get 10 DAPP (Once per day)'
+            'Get 100 DAPP (Once per day)'
           )}
         </button>
       </div>

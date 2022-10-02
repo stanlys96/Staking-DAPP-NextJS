@@ -254,7 +254,7 @@ export default function StakingCard({
           <div className={styles.stakingDescription}>
             <p className={styles.stakeSubtitle}>Available to STAKE</p>
             <p className={styles.stakeValue}>
-              {formattedTokenBalance} {token}
+              {formattedTokenBalance.toFixed(2)} {token}
             </p>
             <p className={styles.stakeValue}>
               ${(valueInUsd * formattedTokenBalance).toFixed(2)} US

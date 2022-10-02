@@ -101,9 +101,29 @@
   align-items: center;
 }
 
+.mainContainer {
+  position: relative;
+}
+
+.rewardInfoBtn {
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  background-color: #60edff;
+  border: 2px solid #60edff;
+  color: #8487ba;
+  padding: 5px 15px !important;
+}
+
+.rewardInfoBtn:hover {
+  color: #d8d8e9;
+  background-color: #5c68ce;
+  border: 2px solid #5c68ce;
+}
+
 /* Deposit Withdraw */
 .depositWithdrawContainer {
-  margin-top: 30px;
+  padding-top: 30px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -206,7 +226,8 @@
 .withdrawBtn,
 .selectWalletBtn,
 .depositEthBtn,
-.withdrawEthBtn {
+.withdrawEthBtn,
+.rewardInfoBtn {
   display: flex;
   justify-content: center;
   align-items: center;

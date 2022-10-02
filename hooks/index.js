@@ -6,3 +6,5 @@ export { useGetTokenValue } from './useGetUserTokenValue';
 export { useDepositETH } from './useDepositETH';
 export { useWithdrawETH } from './useWithdrawETH';
 export { useGetUserTotalValue } from './useGetUserTotalValue';
+export { useStakingReward } from './useStakingReward';
+export { useWithdrawReward } from './useWithdrawReward';

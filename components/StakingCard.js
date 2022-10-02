@@ -1,24 +1,16 @@
 import styles from '../styles/Home.module.css';
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
-import {
-  useTokenBalance,
-  useEthers,
-  ChainId,
-  useNotifications,
-  useCall,
-} from '@usedapp/core';
+import { useTokenBalance, useEthers, useNotifications } from '@usedapp/core';
 import { formatUnits } from '@ethersproject/units';
-import TokenFarm from '../chain-info/contracts/TokenFarm.json';
-import ERC20 from '../chain-info/contracts/MockERC20.json';
-import { Contract } from '@ethersproject/contracts';
-import networkMapping from '../networkMapping.json';
 import { constants, utils } from 'ethers';
 import {
   useStakeTokens,
   useStakedBalance,
   useUnstakeTokens,
   useGetTokenValue,
+  useWithdrawReward,
+  useStakingReward,
 } from '../hooks';
 import { ClipLoader, BeatLoader } from 'react-spinners';
 import Swal from 'sweetalert2';
@@ -40,14 +32,19 @@ export default function StakingCard({
   stakeTitle,
   token,
   tokenAddress,
+  dappTokenValue,
 }) {
   const { chainId, error, account } = useEthers();
   const { notifications } = useNotifications();
   const [amount, setAmount] = useState(0);
   const [stakedValue, setStakedValue] = useState(0);
+
   const [valueInUsd, setValueInUsd] = useState(0);
   const [isStaking, setIsStaking] = useState(false);
   const [isUnstaking, setIsUnstaking] = useState(false);
+  const [isWithdrawReward, setIsWithdrawReward] = useState(false);
+  const [rewardValue, setRewardValue] = useState(0);
+
   const tokenBalance = useTokenBalance(
     tokenAddress,
     account ? account : constants.AddressZero,
@@ -67,10 +64,15 @@ export default function StakingCard({
   const { send: unstakeTokens, state: unstakeState } =
     useUnstakeTokens(tokenAddress);
 
+  const { send: withdrawReward, state: withdrawRewardState } =
+    useWithdrawReward();
+
   const isMining = approveAndStakeErc20State.status === 'Mining';
   const isUnstakeMining = unstakeState.status === 'Mining';
+  const isWithdrawRewardMining = withdrawRewardState.status === 'Mining';
 
   const tokenValueResult = useGetTokenValue(tokenAddress);
+  const stakingRewardResult = useStakingReward(tokenAddress);
 
   const handleInputChange = (event) => {
     const newAmount =
@@ -95,12 +97,15 @@ export default function StakingCard({
     useState(false);
   const [showStakeTokenSuccess, setShowStakeTokenSuccess] = useState(false);
   const [showUnstakeTokenSuccess, setShowUnstakeTokenSuccess] = useState(false);
+  const [showWithdrawRewardSuccess, setShowWithdrawRewardSuccess] =
+    useState(false);
 
   const handleCloseSnack = () => {
     setShowErc20ApprovalSuccess(false);
     setShowStakeTokenSuccess(false);
     setShowUnstakeTokenSuccess(false);
     setShowDepositETHSuccess(false);
+    setShowWithdrawRewardSuccess(false);
   };
 
   const result = useStakedBalance(tokenAddress);
@@ -150,6 +155,25 @@ export default function StakingCard({
   }, [tokenValueResult]);
 
   useEffect(() => {
+    if (stakingRewardResult) {
+      if (stakingRewardResult.value) {
+        if (stakingRewardResult.value.length > 0) {
+          const reward = parseFloat(
+            stakingRewardResult.value[0].toString() / 10 ** 18
+          ).toFixed(2);
+          setRewardValue(reward);
+        } else {
+          setRewardValue(0);
+        }
+      } else {
+        setRewardValue(0);
+      }
+    } else {
+      setRewardValue(0);
+    }
+  }, [stakingRewardResult]);
+
+  useEffect(() => {
     if (
       notifications.filter(
         (notification) =>
@@ -195,6 +219,21 @@ export default function StakingCard({
       });
     }
   }, [notifications, showUnstakeTokenSuccess]);
+
+  useEffect(() => {
+    if (
+      notifications.filter(
+        (notification) =>
+          notification.type === 'transactionSucceed' &&
+          notification.transactionName === 'Withdraw Reward'
+      ).length > 0
+    ) {
+      Toast.fire({
+        icon: 'success',
+        title: 'Withdraw reward success!',
+      });
+    }
+  }, [notifications, showWithdrawRewardSuccess]);
 
   return (
     <div className={styles.stakingCard}>
@@ -370,13 +409,15 @@ export default function StakingCard({
         <div>
           <div className={styles.stakingFooterDescription}>
             <p className={styles.stakeSubtitle}>Earned</p>
-            <p className={styles.earnedValue}>0 {token}</p>
-            <p className={styles.earnedValue}>$0.00 US</p>
+            <p className={styles.earnedValue}>{rewardValue} DAPP</p>
+            <p className={styles.earnedValue}>
+              ${(dappTokenValue * rewardValue).toFixed(2)} US
+            </p>
           </div>
         </div>
         <div className={styles.withdrawBtnContainer}>
           <button
-            onClick={() => {
+            onClick={async () => {
               if (!account) {
                 Swal.fire({
                   icon: 'error',
@@ -393,28 +434,30 @@ export default function StakingCard({
                 });
                 return;
               }
+              setIsWithdrawReward(true);
+              await withdrawReward(tokenAddress);
+              setIsWithdrawReward(false);
             }}
             className={styles.withdrawBtn}
           >
-            Withdraw
+            {isWithdrawRewardMining ? (
+              <BeatLoader
+                className={styles.chainErrorLoading}
+                color="#36d7b7"
+              />
+            ) : isWithdrawReward ? (
+              <ClipLoader
+                color="#36d7b7"
+                loading={true}
+                // cssOverride={override}
+                size={20}
+                speedMultiplier={1}
+              />
+            ) : (
+              'Withdraw'
+            )}
           </button>
         </div>
-      </div>
-    </div>
-  );
-}
-
-function StakingDescription({ title, value, buttonTitle }) {
-  return (
-    <div className={styles.stakingDescription}>
-      <div>
-        <div>
-          <p className={styles.stakeSubtitle}>{title}</p>
-          <p className={styles.stakeValue}>{value}</p>
-        </div>
-      </div>
-      <div>
-        <button className={styles.stakeBtn}>{buttonTitle}</button>
       </div>
     </div>
   );

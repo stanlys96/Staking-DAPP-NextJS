@@ -254,7 +254,7 @@ export default function Content() {
                 speedMultiplier={1}
               />
             ) : (
-              'Deposit ETH for WETH'
+              'Convert ETH to WETH'
             )}
           </button>
           <button

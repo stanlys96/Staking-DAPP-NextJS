@@ -49,17 +49,10 @@ export default function Header() {
       });
       return;
     }
+
     setIsGet100Dapp(true);
     await get100DappSend();
     setIsGet100Dapp(false);
-    if (get100DappState.errorMessage === 'execution reverted') {
-      Swal.fire({
-        icon: 'error',
-        title: 'Oops...',
-        text: 'You have used your 100 DAPP quota for the day!',
-      });
-      return;
-    }
   };
 
   const userTotalValueResult = useGetUserTotalValue();
@@ -81,6 +74,7 @@ export default function Header() {
   }, [userTotalValueResult]);
 
   useEffect(() => {
+    console.log(notifications, '!!!!');
     if (
       notifications.filter(
         (notification) =>
@@ -94,6 +88,18 @@ export default function Header() {
       });
     }
   }, [notifications, showGet100DappSuccess]);
+
+  useEffect(() => {
+    if (get100DappState.errorMessage) {
+      if (get100DappState.errorMessage.toLowerCase() === 'execution reverted') {
+        Swal.fire({
+          icon: 'error',
+          title: 'Oops...',
+          text: 'You have used your 100 DAPP quota for the day!',
+        });
+      }
+    }
+  }, [get100DappState]);
 
   return (
     <div className={styles.navbar}>

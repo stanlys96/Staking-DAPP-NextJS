@@ -1,12 +1,4 @@
-import {
-  Mainnet,
-  DAppProvider,
-  useEtherBalance,
-  useEthers,
-  Config,
-  Goerli,
-  ChainId,
-} from '@usedapp/core';
+import { Mainnet, DAppProvider, Goerli } from '@usedapp/core';
 import { getDefaultProvider } from 'ethers';
 import '../styles/globals.css';
 

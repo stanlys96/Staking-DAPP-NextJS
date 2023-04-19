@@ -15,6 +15,10 @@
   margin: 0;
 }
 
+.contentContainer {
+  background-color: white;
+}
+
 /* Navbar */
 .navbar {
   padding: 20px;
